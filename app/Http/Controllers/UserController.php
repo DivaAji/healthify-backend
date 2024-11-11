@@ -29,7 +29,7 @@ class UserController extends Controller
             'gender' => 'required|in:Laki-laki,Perempuan', // Validasi gender
             'weight' => 'required|numeric',
             'height' => 'required|numeric',
-            'age' => 'required|integer',
+            'age' => 'nullable|integer',
         ]);
 
         // Membuat instance baru dari UserModel
@@ -46,7 +46,15 @@ class UserController extends Controller
         // Mengembalikan respons JSON
         return response()->json([
             'message' => 'Data created successfully',
-            'data' => $data
+            'data' => [
+                'user_id' => $data->user_id, // Add user_id to the response
+                'username' => $data->username,
+                'email' => $data->email,
+                'gender' => $data->gender,
+                'weight' => $data->weight,
+                'height' => $data->height,
+                'age' => $data->age,
+            ]
         ], 201);
     }
 
@@ -128,7 +136,7 @@ class UserController extends Controller
             'gender' => 'required|in:Laki-laki,Perempuan',
             'weight' => 'required|numeric',
             'height' => 'required|numeric',
-            'age' => 'required|integer',
+            'age' => 'nullable|integer',
         ]);
 
         // Buat pengguna baru

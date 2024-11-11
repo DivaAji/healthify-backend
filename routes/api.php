@@ -4,6 +4,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\APIController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\ImageController;
+use App\Http\Controllers\AgeController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -28,5 +30,5 @@ Route::prefix('user')->group(function () {
     Route::delete('/{id}', [UserController::class, 'destroy']); 
 });
 
-Route::post('register', [UserController::class, 'register']);
-
+Route::post('upload-image', [ImageController::class, 'uploadImage']);
+Route::post('update-age', [AgeController::class, 'updateAge']);

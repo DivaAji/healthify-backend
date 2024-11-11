@@ -19,4 +19,9 @@ class UserModel extends Model
         'weight',
         'age',
     ];
+    // Relasi User ke UserImage
+    public function images()
+    {
+        return $this->hasMany(UserImage::class, 'user_id', 'user_id');
+    }
 }
