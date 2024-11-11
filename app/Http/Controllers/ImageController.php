@@ -16,7 +16,7 @@ class ImageController extends Controller
         // Validate file input
         $request->validate([
             'user_id' => 'required|exists:users,user_id', 
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048', 
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:16384', 
             'age' => 'nullable|integer',
         ]);
 
