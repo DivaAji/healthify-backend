@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use App\Models\UserImage;  // Model UserImage untuk tabel user_images
+use App\Models\UserImage;  // Make sure to import your UserImage model
 
 class ImageController extends Controller
 {
@@ -15,8 +15,9 @@ class ImageController extends Controller
     {
         // Validasi file gambar
         $request->validate([
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'user_id' => 'required|exists:users,user_id'  // Pastikan user_id ada di tabel users
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // Validasi gambar
+            'user_id' => 'required|exists:users,user_id',
+            'age' =>'nullable|integer',  // Pastikan user_id ada di tabel users
         ]);
 
         // Proses upload gambar
@@ -26,9 +27,9 @@ class ImageController extends Controller
 
             // Simpan informasi gambar ke database
             $userImage = new UserImage();
-            $userImage->user_id = $request->input('user_id');
-            $userImage->path = $path;
-            $userImage->save();
+            $userImage->user_id = $request->input('user_id');  // Menyimpan user_id yang diambil dari request
+            $userImage->path = $path;  // Menyimpan path gambar
+            $userImage->save();  // Simpan data ke database
 
             return response()->json([
                 'message' => 'Gambar berhasil diupload',
