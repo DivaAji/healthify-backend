@@ -32,3 +32,4 @@ Route::prefix('user')->group(function () {
 
 Route::post('upload-image', [ImageController::class, 'uploadImage']);
 Route::post('update-age', [AgeController::class, 'updateAge']);
+Route::post('/api/upload-image', [ImageController::class, 'uploadImage']);
