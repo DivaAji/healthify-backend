@@ -6,6 +6,7 @@ use App\Http\Controllers\APIController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ImageController;
 use App\Http\Controllers\AgeController;
+use App\Http\Controllers\LoginController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -21,6 +22,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+// routes/api.php
+Route::post('login', [LoginController::class, 'login']);
+
 // Route CRUD untuk resource 'user'
 Route::prefix('user')->group(function () {
     Route::get('/', [UserController::class, 'index']);         
@@ -31,5 +35,4 @@ Route::prefix('user')->group(function () {
 });
 
 Route::post('upload-image', [ImageController::class, 'uploadImage']);
-Route::post('update-age', [AgeController::class, 'updateAge']);
 Route::post('/api/upload-image', [ImageController::class, 'uploadImage']);
