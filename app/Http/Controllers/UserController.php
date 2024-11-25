@@ -152,4 +152,21 @@ class UserController extends Controller
 
         return response()->json(['message' => 'User registered successfully', 'user' => $user], 201);
     }
+    public function submitAge(Request $request)
+    {
+        $request->validate([
+            'user_id' => 'required|integer',
+            'age' => 'required|integer|min:0',
+        ]);
+
+        $user = UserModel::find($request->user_id);
+        if ($user) {
+            $user->age = $request->age;
+            $user->save();
+
+            return response()->json(['message' => 'Usia berhasil disimpan'], 200);
+        } else {
+            return response()->json(['error' => 'User tidak ditemukan'], 404);
+        }
+    }
 }

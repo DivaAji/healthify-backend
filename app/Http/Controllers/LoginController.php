@@ -22,6 +22,8 @@ class LoginController extends Controller
             $token = JWTAuth::fromUser($user); // Menggunakan user yang sudah diimplementasikan JWTSubject
             return response()->json(compact('token'));
         }
+
+        Log::info('User logged in: ' . $user->username);
         
         return response()->json(['message' => 'Unauthorized'], 401);
     }
