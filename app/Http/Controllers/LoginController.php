@@ -18,10 +18,11 @@ class LoginController extends Controller
         $user = UserModel::where('username', $request->username)->first();
         
         if ($user && Hash::check($request->password, $user->password)) {
-            // Jika cocok, buat token API
-            $token = JWTAuth::fromUser($user); // Menggunakan user yang sudah diimplementasikan JWTSubject
+            $token = JWTAuth::fromUser($user);
+            \Log::info('Token berhasil dibuat: ' . $token);
             return response()->json(compact('token'));
         }
+        
 
         Log::info('User logged in: ' . $user->username);
         

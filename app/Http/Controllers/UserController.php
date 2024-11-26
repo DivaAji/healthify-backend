@@ -135,32 +135,6 @@ class UserController extends Controller
     }
 
 
-    public function register(Request $request)
-    {
-        // Validasi input
-        $request->validate([
-            'username' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8|confirmed',  // password harus terkonfirmasi
-            'gender' => 'required|in:Laki-laki,Perempuan',
-            'weight' => 'required|numeric',
-            'height' => 'required|numeric',
-            'age' => 'nullable|integer',
-        ]);
-
-        // Buat pengguna baru
-        $user = User::create([
-            'username' => $request->username,
-            'email' => $request->email,
-            'password' => Hash::make($request->password), // Hash password
-            'gender' => $request->gender,
-            'weight' => $request->weight,
-            'height' => $request->height,
-            'age' => $request->age,
-        ]);
-
-        return response()->json(['message' => 'User registered successfully', 'user' => $user], 201);
-    }
     public function submitAge(Request $request)
     {
         $request->validate([
@@ -178,4 +152,25 @@ class UserController extends Controller
             return response()->json(['error' => 'User tidak ditemukan'], 404);
         }
     }
+
+    public function currentUser(Request $request)
+{
+    $user = $request->user(); // Mendapatkan data pengguna dari token
+    return response()->json([
+        'status' => 'success',
+        'data' => $user, // Data lengkap pengguna
+    ]);
+}
+
+
+    private function determineAgeRange($age)
+    {
+        if ($age < 18) return 'Under 18';
+        if ($age >= 18 && $age <= 30) return '18-30';
+        if ($age >= 31 && $age <= 50) return '31-50';
+        return 'Above 50';
+    }
+
+
+
 }

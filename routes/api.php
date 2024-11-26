@@ -7,6 +7,8 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\ImageController;
 use App\Http\Controllers\AgeController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\WorkoutController;
+use App\Http\Controllers\ProfileController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -33,6 +35,10 @@ Route::prefix('user')->group(function () {
     Route::put('/{id}', [UserController::class, 'update']);    
     Route::delete('/{id}', [UserController::class, 'destroy']); 
 });
-
 Route::post('upload-image', [ImageController::class, 'uploadImage']);
 Route::post('submit-age-manual', [UserController::class, 'submitAge']);
+
+
+Route::middleware('auth:api')->get('/profile', [ProfileController::class, 'show']);
+
+Route::get('/workouts', [WorkoutController::class, 'getWorkoutsByAge']);
