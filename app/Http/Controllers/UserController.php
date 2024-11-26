@@ -115,16 +115,24 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        $data = UserModel::find($id);
+        try {
+            $user = UserModel::find($id);
 
-        if (!$data) {
-            return response()->json(['message' => 'Data not found'], 404);
+            if (!$user) {
+                return response()->json(['message' => 'User not found'], 404);
+            }
+
+            $user->delete();
+
+            return response()->json(['message' => 'User deleted successfully'], 200);
+        } catch (\Exception $e) {
+            // Log error (opsional, jika Anda menggunakan logging)
+            \Log::error('Error deleting user: ' . $e->getMessage());
+
+            return response()->json(['message' => 'An error occurred while deleting the user'], 500);
         }
-
-        $data->delete();
-
-        return response()->json(['message' => 'Data deleted successfully']);
     }
+
 
     public function register(Request $request)
     {
