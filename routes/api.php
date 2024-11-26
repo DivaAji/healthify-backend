@@ -35,4 +35,4 @@ Route::prefix('user')->group(function () {
 });
 
 Route::post('upload-image', [ImageController::class, 'uploadImage']);
-Route::post('submit-age', [UserController::class, 'submitAge']);
+Route::post('submit-age-manual', [UserController::class, 'submitAge']);

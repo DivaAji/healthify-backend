@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\UserModel;
+use App\Models\UserImage;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
@@ -163,14 +164,14 @@ class UserController extends Controller
     public function submitAge(Request $request)
     {
         $request->validate([
-            'user_id' => 'required|integer',
+            'user_id' => 'required|integer|exists:users,user_id',
             'age' => 'required|integer|min:0',
         ]);
 
-        $user = UserModel::find($request->user_id);
-        if ($user) {
-            $user->age = $request->age;
-            $user->save();
+        $userImage = UserImage::where('user_id', $request->user_id)->first();
+        if ($userImage) {
+            $userImage->age = $request->age;
+            $userImage->save();
 
             return response()->json(['message' => 'Usia berhasil disimpan'], 200);
         } else {
