@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use App\Models\UserModel;
 use App\Models\UserImage;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
+use Tymon\JWTAuth\Facades\JWTAuth;
+
 
 class UserController extends Controller
 {
@@ -76,38 +79,53 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      */
+    // Update the specified resource in storage.
+    public function __construct()
+    {
+        $this->middleware('auth:api'); // Menambahkan middleware untuk memastikan user terautentikasi
+    }
+
     public function update(Request $request, $id)
     {
-        $data = UserModel::find($id);
-
-        if (!$data) {
-            return response()->json(['message' => 'Data not found'], 404);
+        // Verifikasi jika user yang mengakses adalah user yang sama
+        $user = JWTAuth::parseToken()->authenticate();
+        if ($user->id != $id) {
+            return response()->json(['message' => 'Unauthorized'], 401);
         }
 
+        // Validasi data yang diterima
         $request->validate([
             'username' => 'sometimes|required|string|max:255',
-            'email' => 'sometimes|required|email|unique:users,email,' . $id,
-            'password' => 'sometimes|required|string|min:6',
-            'gender' => 'sometimes|required|in:Laki-laki,Perempuan', // Validasi gender
-            'weight' => 'sometimes|required|numeric',
+            'email' => 'sometimes|required|email|max:255|unique:users,email,' . $user->id,
             'height' => 'sometimes|required|numeric',
-            'age' => 'sometimes|required|integer',
+            'weight' => 'sometimes|required|numeric',
+            'gender' => 'sometimes|required|string',
         ]);
 
-        $data->username = $request->username ?? $data->username;
-        $data->email = $request->email ?? $data->email;
-        if ($request->has('password')) {
-            $data->password = Hash::make($request->password); // Hash password jika diupdate
+        // Update field yang diubah
+        if ($request->has('username')) {
+            $user->username = $request->username;
         }
-        $data->gender = $request->gender ?? $data->gender; // Update gender jika ada
-        $data->weight = $request->weight ?? $data->weight;
-        $data->height = $request->height ?? $data->height;
-        $data->age = $request->age ?? $data->age;
-        $data->save();  
+        if ($request->has('email')) {
+            $user->email = $request->email;
+        }
+        if ($request->has('height')) {
+            $user->height = $request->height;
+        }
+        if ($request->has('weight')) {
+            $user->weight = $request->weight;
+        }
+        if ($request->has('gender')) {
+            $user->gender = $request->gender;
+        }
 
+        // Simpan perubahan
+        $user->save();
+
+        // Kembalikan respons sukses
         return response()->json([
             'message' => 'Data updated successfully',
-            'data' => $data
+            'data' => $user
         ]);
     }
 

@@ -20,9 +20,14 @@ use App\Http\Controllers\ProfileController;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
+
+Route::middleware('auth:api')->get('/user', function (Request $request) {
+    return response()->json($request->user());
 });
+
 
 // routes/api.php
 Route::post('login', [LoginController::class, 'login']);
@@ -31,14 +36,18 @@ Route::post('login', [LoginController::class, 'login']);
 Route::prefix('user')->group(function () {
     Route::get('/', [UserController::class, 'index']);         
     Route::post('/', [UserController::class, 'store']);        
-    Route::get('/{id}', [UserController::class, 'show']);      
-    Route::put('/{id}', [UserController::class, 'update']);    
-    Route::delete('/{id}', [UserController::class, 'destroy']); 
+    Route::get('/{id}', [UserController::class, 'show']);     
+    
+    // Pastikan route ini menggunakan middleware auth:api untuk memverifikasi JWT
+    Route::put('/{id}', [UserController::class, 'update'])->middleware('auth:api');    
+    Route::delete('/{id}', [UserController::class, 'destroy'])->middleware('auth:api'); 
 });
+
 Route::post('upload-image', [ImageController::class, 'uploadImage']);
 Route::post('submit-age-manual', [UserController::class, 'submitAge']);
 
 
 Route::middleware('auth:api')->get('/profile', [ProfileController::class, 'show']);
+Route::middleware('auth:api')->put('/profile', [ProfileController::class, 'update']);
 
 Route::get('/workouts', [WorkoutController::class, 'getWorkoutsByAge']);

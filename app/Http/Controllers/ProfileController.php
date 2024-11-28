@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\UserModel;
 
 class ProfileController extends Controller
 {
@@ -34,6 +35,48 @@ class ProfileController extends Controller
             'profile_picture' => $user->profile_picture, // Assuming the user has a profile picture
         ]);
     }
+
+    public function update(Request $request)
+    {
+        // Mendapatkan pengguna yang sudah terautentikasi
+        $user = $request->user();  // You already have the authenticated user
+
+        // Validasi data yang diterima
+        $validated = $request->validate([
+            'username' => 'sometimes|required|string|max:255|unique:users,username,' . $user->user_id . ',user_id',  
+            'email' => 'sometimes|required|email|max:255|unique:users,email,' . $user->user_id . ',user_id', 
+            'height' => 'sometimes|required|numeric',
+            'weight' => 'sometimes|required|numeric',
+            'gender' => 'sometimes|required|string',
+        ]);
+
+        // Update data pengguna
+        if ($request->has('username')) {
+            $user->username = $request->username;
+        }
+        if ($request->has('email')) {
+            $user->email = $request->email;
+        }
+        if ($request->has('height')) {
+            $user->height = $request->height;
+        }
+        if ($request->has('weight')) {
+            $user->weight = $request->weight;
+        }
+        if ($request->has('gender')) {
+            $user->gender = $request->gender;
+        }
+
+        // Simpan perubahan
+        $user->save();
+
+        // Kembalikan respons sukses
+        return response()->json([
+            'message' => 'Profile updated successfully',
+            'data' => $user
+        ]);
+    }
+
 
     // Method to categorize age into ranges
     private function getAgeRange($age)
