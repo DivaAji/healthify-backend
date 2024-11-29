@@ -30,7 +30,7 @@ class ProfileController extends Controller
             'gender' => $user->gender,
             'height' => $user->height,
             'weight' => $user->weight,
-            'age_range' => $ageRange,
+            'ageRange' => $ageRange,
             'bmi' => $bmi,
             'profile_picture' => $user->profile_picture, // Assuming the user has a profile picture
         ]);

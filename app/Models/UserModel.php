@@ -23,6 +23,7 @@ class UserModel extends Model implements Authenticatable, JWTSubject
         'height',
         'weight',
         'age',
+        'ageRange',
     ];
 
     // Implementasi method yang diminta oleh JWTSubject

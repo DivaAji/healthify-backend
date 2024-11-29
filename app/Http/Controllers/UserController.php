@@ -34,6 +34,7 @@ class UserController extends Controller
             'weight' => 'required|numeric',
             'height' => 'required|numeric',
             'age' => 'nullable|integer',
+            'ageRange' => 'nullable|string|max:20',
         ]);
 
         // Membuat instance baru dari UserModel
@@ -45,6 +46,7 @@ class UserController extends Controller
         $data->weight = $request->weight;
         $data->height = $request->height;
         $data->age = $request->age;
+        $data->ageRange = $request->ageRange;
         $data->save(); // Menyimpan data ke database
 
         // Mengembalikan respons JSON
@@ -58,6 +60,7 @@ class UserController extends Controller
                 'weight' => $data->weight,
                 'height' => $data->height,
                 'age' => $data->age,
+                'ageRange' => $data->ageRange,
             ]
         ], 201);
     }
