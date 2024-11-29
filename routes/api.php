@@ -27,7 +27,7 @@ Route::prefix('user')->group(function () {
 });
 
 // Rute untuk login
-// Route::post('/login', [LoginController::class, 'login'])->name('login');
+Route::post('/login', [LoginController::class, 'login'])->name('login');
 
 // Rute untuk upload gambar dan submit umur manual (tanpa autentikasi)
 Route::post('upload-image', [ImageController::class, 'uploadImage']);
@@ -37,5 +37,7 @@ Route::post('submit-age-manual', [UserController::class, 'submitAge']);
 Route::middleware('auth:api')->get('/profile', [ProfileController::class, 'show']);
 Route::middleware('auth:api')->put('/profile', [ProfileController::class, 'update']);
 
-// Rute untuk workout (tanpa autentikasi)
-Route::get('/workouts', [WorkoutController::class, 'getWorkoutsByAge']);
+// Rute untuk workout 
+// Route::get('/workouts/age', [WorkoutController::class, 'getWorkoutsByAge']);
+// Route::middleware('auth:sanctum')->get('/workouts/age', [WorkoutController::class, 'getWorkoutsByAge']);
+Route::get('workouts/categories/{id}', [WorkoutController::class, 'getCategoriesByAgeRange']);

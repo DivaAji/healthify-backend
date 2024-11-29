@@ -9,28 +9,24 @@ class ProfileController extends Controller
 {
     public function show(Request $request)
     {
-        // Get the authenticated user
         $user = $request->user();
 
-        // Get the user's age, height, and weight
-        $age = $user->age; // Assuming age is stored as an integer in the database
-        $height = $user->height; // height in cm
-        $weight = $user->weight; // weight in kg
-
-        // Calculate age range
-        $ageRange = $this->getAgeRange($age);
+        $age = $user->age; 
+        $height = $user->height; 
+        $weight = $user->weight; 
 
         // Calculate BMI
         $bmi = $this->calculateBmi($height, $weight);
 
         // Return the user profile data with age range and BMI
         return response()->json([
+            'user_id' => $user->user_id,
             'username' => $user->username,
             'email' => $user->email,
             'gender' => $user->gender,
             'height' => $user->height,
             'weight' => $user->weight,
-            'ageRange' => $ageRange,
+            'ageRange' => $user->ageRange,
             'bmi' => $bmi,
             'profile_picture' => $user->profile_picture, // Assuming the user has a profile picture
         ]);
@@ -78,19 +74,6 @@ class ProfileController extends Controller
     }
 
 
-    // Method to categorize age into ranges
-    private function getAgeRange($age)
-    {
-        if ($age < 18) {
-            return 'Under 18';
-        } elseif ($age >= 18 && $age <= 30) {
-            return '18-30 years';
-        } elseif ($age >= 30 && $age <= 50) {
-            return '30-50 years';
-        } else {
-            return 'Above 50 years';
-        }
-    }
 
     // Method to calculate BMI (Weight in kg, Height in cm)
     private function calculateBmi($height, $weight)

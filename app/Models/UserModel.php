@@ -42,4 +42,9 @@ class UserModel extends Model implements Authenticatable, JWTSubject
     {
         return $this->hasMany(UserImage::class, 'user_id', 'user_id');
     }
+
+    public function workoutsUser()
+    {
+        return $this->hasMany(WorkoutUser::class, 'user_id', 'user_id');
+    }
 }
