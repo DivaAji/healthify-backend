@@ -27,7 +27,7 @@ Route::prefix('user')->group(function () {
 });
 
 // Rute untuk login
-Route::post('/login', [LoginController::class, 'login'])->name('login');
+// Route::post('/login', [LoginController::class, 'login'])->name('login');
 
 // Rute untuk upload gambar dan submit umur manual (tanpa autentikasi)
 Route::post('upload-image', [ImageController::class, 'uploadImage']);
