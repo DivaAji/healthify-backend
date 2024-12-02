@@ -38,6 +38,4 @@ Route::middleware('auth:api')->get('/profile', [ProfileController::class, 'show'
 Route::middleware('auth:api')->put('/profile', [ProfileController::class, 'update']);
 
 // Rute untuk workout 
-// Route::get('/workouts/age', [WorkoutController::class, 'getWorkoutsByAge']);
-// Route::middleware('auth:sanctum')->get('/workouts/age', [WorkoutController::class, 'getWorkoutsByAge']);
 Route::get('workouts/categories/{id}', [WorkoutController::class, 'getCategoriesByAgeRange']);

@@ -5,6 +5,7 @@ use App\Models\UserModel;
 use App\Models\Workout;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use App\Models\WorkoutUser;
 
 class WorkoutController extends Controller
 {
@@ -53,4 +54,5 @@ class WorkoutController extends Controller
             'workouts' => $workouts
         ]);
     }
+
 }
