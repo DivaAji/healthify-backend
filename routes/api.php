@@ -9,6 +9,7 @@ use App\Http\Controllers\AgeController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\WorkoutController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\WorkoutUserController;
 
 /*
 |---------------------------------------------------------------------------
@@ -39,3 +40,4 @@ Route::middleware('auth:api')->put('/profile', [ProfileController::class, 'updat
 
 // Rute untuk workout 
 Route::get('workouts/categories/{id}', [WorkoutController::class, 'getCategoriesByAgeRange']);
+Route::post('/workouts/select', [WorkoutUserController::class, 'store']);

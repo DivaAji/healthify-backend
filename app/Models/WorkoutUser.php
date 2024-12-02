@@ -10,8 +10,14 @@ class WorkoutUser extends Model
     use HasFactory;
     protected $table = 'workouts_user';
     protected $primaryKey = 'workouts_user_id';
-    protected $fillable = ['user_id', 'workouts_details_id', 'completed'];
+    protected $fillable = ['user_id', 'workouts_id', 'workouts_details_id', 'completed'];
 
+    //Relasi ke workout
+    public function workout()
+    {
+        return $this->belongsTo(Workout::class, 'workouts_id');
+    }
+    
     // Relasi ke user
     public function user()
     {
