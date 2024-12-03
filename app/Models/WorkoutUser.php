@@ -29,4 +29,6 @@ class WorkoutUser extends Model
     {
         return $this->belongsTo(WorkoutDetail::class, 'workouts_details_id');
     }
+
+
 }

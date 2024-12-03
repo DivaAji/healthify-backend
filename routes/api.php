@@ -10,6 +10,7 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\WorkoutController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\WorkoutUserController;
+use App\Http\Controllers\WorkoutCategoryUserController;
 
 /*
 |---------------------------------------------------------------------------
@@ -43,3 +44,4 @@ Route::get('workouts/categories/{id}', [WorkoutController::class, 'getCategories
 
 // Rute untuk menyimpan data workout user
 Route::post('/workouts/select', [WorkoutUserController::class, 'store']);
+Route::get('categoryStatus/{userId}/{workoutsId}', [WorkoutCategoryUserController::class, 'checkCategoryStatus']);
