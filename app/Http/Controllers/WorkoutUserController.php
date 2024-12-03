@@ -48,24 +48,5 @@ class WorkoutUserController extends Controller
         ], 201);
     }
 
-    public function getWorkoutsByCategory($userId)
-    {
-        // Ambil data dari workouts_category_user untuk user_id
-        $workoutsCategoryUser = WorkoutCategoryUser::where('user_id', $userId)->get();
-        
-        $workoutsWithStatus = $workoutsCategoryUser->map(function ($category) {
-            $workoutId = $category->workouts_id;
-
-            // Ambil data dari workouts_category_detail untuk mengecek status completed
-            $categoryDetail = WorkoutDetail::where('workouts_id', $workoutId)->first();
-
-            // Jika completed = 0, berarti kategori masih ongoing
-            $category->isOngoing = $categoryDetail && $categoryDetail->completed == 0;
-
-            return $category;
-        });
-
-        return response()->json($workoutsWithStatus);
-    }
 
 }

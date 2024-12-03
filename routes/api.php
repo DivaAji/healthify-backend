@@ -43,6 +43,3 @@ Route::get('workouts/categories/{id}', [WorkoutController::class, 'getCategories
 
 // Rute untuk menyimpan data workout user
 Route::post('/workouts/select', [WorkoutUserController::class, 'store']);
-
-// Rute untuk mengambil workout berdasarkan kategori dan status (Ongoing atau Completed)
-Route::get('workouts/{userId}', [WorkoutUserController::class, 'getWorkoutsByCategory']);
