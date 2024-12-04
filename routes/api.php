@@ -49,3 +49,6 @@ Route::get('categoryStatus/{userId}/{workoutsId}', [WorkoutCategoryUserControlle
 // Route::get('/workouts/details', [WorkoutController::class, 'getWorkoutDetails']);
 Route::get('/workout-details/{workoutsId}', [WorkoutScreenController::class, 'getWorkoutDetails']);
 Route::post('start-program', [WorkoutController::class, 'startProgram']);
+// Route::get('workout-steps/{userId}/{dayNumber}', [WorkoutController::class, 'getWorkoutSteps']);
+Route::get('workouts/{userId}/{workoutsId}/steps/{dayNumber}', [WorkoutController::class, 'getWorkoutSteps']);
+Route::post('workouts/update-progress', [WorkoutController::class, 'updateWorkoutUserProgress']);

@@ -118,7 +118,7 @@ class WorkoutController extends Controller
             \Log::info("Core Exercises: " . $coreExercises->count());
 
             // Gabungkan semua latihan yang diambil
-            $allExercises = $warmups->merge($cooldowns)->merge($coreExercises);
+            $allExercises = $warmups->merge($coreExercises)->merge($cooldowns);
 
             // Simpan setiap latihan ke tabel workouts_user
             foreach ($allExercises as $exercise) {
@@ -138,4 +138,51 @@ class WorkoutController extends Controller
             ], 500);
         }
     }
+
+    public function getWorkoutSteps($userId, $workoutsId, $dayNumber)
+    {
+        try {
+            // Ambil langkah-langkah latihan dari tabel workouts_user berdasarkan user_id, workouts_id, dan day_number
+            $workoutUserDetails = WorkoutUser::where('user_id', $userId)
+                ->where('workouts_id', $workoutsId)
+                ->where('day_number', $dayNumber)
+                ->where('completed', 0) // Filter berdasarkan yang belum selesai
+                ->get();
+
+            // Ambil detail latihan berdasarkan workouts_details_id yang ada di tabel workouts_user
+            $workoutDetails = WorkoutDetail::whereIn('workouts_details_id', $workoutUserDetails->pluck('workouts_details_id'))
+                ->get();
+
+            // Kembalikan data langkah-langkah latihan
+            return response()->json($workoutDetails);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Error fetching workout steps: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function updateWorkoutUserProgress(Request $request)
+    {
+        // Menyimpan status progres latihan
+        $validated = $request->validate([
+            'user_id' => 'required|integer',
+            'workouts_id' => 'required|integer',
+            'workouts_details_id' => 'required|integer',
+            'completed' => 'required|boolean',
+        ]);
+
+        $workoutUser = WorkoutUser::updateOrCreate(
+            [
+                'user_id' => $validated['user_id'],
+                'workouts_id' => $validated['workouts_id'],
+                'workouts_details_id' => $validated['workouts_details_id'],
+                'day_number' => $request->input('day_number', 1),
+            ],
+            ['completed' => $validated['completed']]
+        );
+
+        return response()->json($workoutUser);
+    }
+
 }
