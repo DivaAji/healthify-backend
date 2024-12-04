@@ -17,4 +17,9 @@ class Workout extends Model
     {
         return $this->hasMany(WorkoutDetail::class, 'workouts_id', 'workouts_id');
     }
+
+    public function workoutCategoryUsers()
+    {
+        return $this->hasMany(WorkoutCategoryUser::class, 'workouts_id', 'workouts_id');
+    }
 }
