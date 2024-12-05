@@ -8,6 +8,7 @@ use App\Models\WorkoutDetail;
 use App\Models\WorkoutUser;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 
 class WorkoutController extends Controller
 {
@@ -206,4 +207,20 @@ class WorkoutController extends Controller
         // Kembalikan response
         return response()->json(['max_day_number' => $maxDayNumber ?? 1]);
     }
+
+    public function checkUserWorkoutStatus(Request $request)
+    {
+        $userId = $request->input('user_id');
+        $workoutsId = $request->input('workouts_id');
+        $today = now()->toDateString();
+
+        $exists = DB::table('workouts_user')
+            ->where('user_id', $userId)
+            ->where('workouts_id', $workoutsId)
+            ->whereDate('updated_at', $today)
+            ->exists();
+
+        return response()->json(['exists' => $exists]);
+    }
+
 }
