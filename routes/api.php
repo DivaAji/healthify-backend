@@ -10,6 +10,8 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\WorkoutController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\WorkoutUserController;
+use App\Http\Controllers\WorkoutCategoryUserController;
+use App\Http\Controllers\WorkoutScreenController;
 
 /*
 |---------------------------------------------------------------------------
@@ -38,6 +40,17 @@ Route::post('submit-age-manual', [UserController::class, 'submitAge']);
 Route::middleware('auth:api')->get('/profile', [ProfileController::class, 'show']);
 Route::middleware('auth:api')->put('/profile', [ProfileController::class, 'update']);
 
-// Rute untuk workout 
+// Rute untuk mengambil kategori workout berdasarkan usia
 Route::get('workouts/categories/{id}', [WorkoutController::class, 'getCategoriesByAgeRange']);
+
+// Rute untuk menyimpan data workout user
 Route::post('/workouts/select', [WorkoutUserController::class, 'store']);
+Route::get('categoryStatus/{userId}/{workoutsId}', [WorkoutCategoryUserController::class, 'checkCategoryStatus']);
+// Route::get('/workouts/details', [WorkoutController::class, 'getWorkoutDetails']);
+Route::get('/workout-details/{workoutsId}', [WorkoutScreenController::class, 'getWorkoutDetails']);
+Route::post('start-program', [WorkoutController::class, 'startProgram']);
+// Route::get('workout-steps/{userId}/{dayNumber}', [WorkoutController::class, 'getWorkoutSteps']);
+Route::get('workouts/{userId}/{workoutsId}/steps/{dayNumber}', [WorkoutController::class, 'getWorkoutSteps']);
+Route::post('workouts/update-progress', [WorkoutController::class, 'updateWorkoutUserProgress']);
+Route::get('/getMaxDayNumber/{userId}/{workoutsId}', [WorkoutController::class, 'getMaxDayNumber']);
+Route::post('/statusWorkouts', [WorkoutController::class, 'checkUserWorkoutStatus']);

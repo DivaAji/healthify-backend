@@ -2,7 +2,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\WorkoutUser; // Model WorkoutsUser
+use App\Models\WorkoutCategoryUser;
 
 class WorkoutUserController extends Controller
 {
@@ -11,28 +11,24 @@ class WorkoutUserController extends Controller
         // Validasi input
         $validated = $request->validate([
             'workouts_id' => 'required|integer|exists:workouts,workouts_id',
-            'completed' => 'required|boolean',
-            'user_id' => 'required|integer|exists:users,user_id', // Validate user_id
+            'user_id' => 'required|integer|exists:users,user_id', // Validasi user_id
         ]);
 
-        $user_id = $validated['user_id']; // Get user_id from the request
+        $user_id = $validated['user_id']; // Ambil user_id dari request
 
-        // Ambil semua workout details berdasarkan workouts_id yang diterima
-        $workoutsDetails = \App\Models\WorkoutDetail::where('workouts_id', $validated['workouts_id'])->get();
-
-        // Menyimpan data ke tabel workouts_user untuk setiap detail workout
-        foreach ($workoutsDetails as $detail) {
-            WorkoutUser::create([
+        // Tambahkan atau perbarui data di tabel workout_category_user
+        WorkoutCategoryUser::updateOrCreate(
+            [
                 'user_id' => $user_id,
                 'workouts_id' => $validated['workouts_id'],
-                'workouts_details_id' => $detail->workouts_details_id,
-                'completed' => $validated['completed'],
-            ]);
-        }
+            ],
+            [
+                'status' => 0, // Set status default ke 0 (Ongoing)
+            ]
+        );
 
         return response()->json([
-            'message' => 'Workout program selected successfully!',
+            'message' => 'Workout category successfully added or updated!',
         ], 201);
     }
-
 }

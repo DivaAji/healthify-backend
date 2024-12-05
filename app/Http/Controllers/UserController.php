@@ -158,30 +158,39 @@ class UserController extends Controller
 
     public function submitAge(Request $request)
     {
+        // Validate the input
         $request->validate([
-            'user_id' => 'required|integer|exists:users,user_id',
-            'age' => 'required|integer|min:0',
+            'user_id' => 'required|integer|exists:users,user_id', // Ensure user exists
+            'ageRange' => 'required', // Validate age range
         ]);
 
-        $userImage = UserImage::where('user_id', $request->user_id)->first();
-        if ($userImage) {
-            $userImage->age = $request->age;
-            $userImage->save();
+        // Find the user by their user_id
+        $user = UserImage::where('user_id', $request->user_id)->first();;
+
+        if ($user) {
+            $user->ageRange = $request->ageRange;
+            $user->save();
 
             return response()->json(['message' => 'Usia berhasil disimpan'], 200);
         } else {
             return response()->json(['error' => 'User tidak ditemukan'], 404);
         }
+
+        // Return success response
+        return response()->json([
+            'message' => 'Age range updated successfully.',
+            'data' => $user
+        ], 200);
     }
 
     public function currentUser(Request $request)
-{
-    $user = $request->user(); // Mendapatkan data pengguna dari token
-    return response()->json([
-        'status' => 'success',
-        'data' => $user, // Data lengkap pengguna
-    ]);
-}
+    {
+        $user = $request->user(); // Mendapatkan data pengguna dari token
+        return response()->json([
+            'status' => 'success',
+            'data' => $user, // Data lengkap pengguna
+        ]);
+    }
 
 
     private function determineAgeRange($age)

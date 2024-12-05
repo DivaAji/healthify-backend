@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -17,7 +18,7 @@ class ImageController extends Controller
             $request->validate([
                 'user_id' => 'required|exists:users,user_id',  // Pastikan user_id valid
                 'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:16384', // Validasi file image
-                'age' => 'nullable|integer',
+                'ageRange' => 'nullable|integer',
             ]);
 
             if ($request->hasFile('image')) {
@@ -25,22 +26,22 @@ class ImageController extends Controller
                 $image = $request->file('image');
                 $path = $image->store('user_images', 'public'); // Menyimpan file di storage/public
 
-                // Kirim gambar ke Flask untuk prediksi usia
-                $predictedAge = $this->sendImageToFlask(storage_path('app/public/' . $path)); // Path absolut
+                // Kirim gambar ke Flask untuk memprediksi usia
+                $predictedAge = $this->sendImageToFlask(storage_path('app/public/' . $path));
 
-                // Simpan data gambar dan prediksi usia ke database
+                // Simpan data dengan prediksi usia
                 $userImage = new UserImage();
                 $userImage->user_id = $request->user_id;
-                $userImage->path = 'user_images/' . basename($path); // Menyimpan path relatif untuk akses publik
-                $userImage->age = $predictedAge;  // Simpan usia yang diprediksi
+                $userImage->path = 'user_images/' . basename($path);
+                $userImage->ageRange = $predictedAge;  // Simpan usia yang diprediksi
                 $userImage->save();
 
                 // Kembalikan response dengan pesan sukses dan data gambar
                 return response()->json([
                     'message' => 'Image uploaded and predicted successfully',
-                    'path' => asset('storage/' . $userImage->path),  // Path gambar yang bisa diakses publik
-                    'predicted_age' => $predictedAge
-                ], 200);
+                    'path' => asset('storage/' . $userImage->path),
+                    'ageRange' => $predictedAge, // Kirim usia yang diprediksi
+                ], 200);                
             }
 
             return response()->json(['message' => 'No image found'], 400);

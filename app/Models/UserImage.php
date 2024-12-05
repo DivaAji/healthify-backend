@@ -12,7 +12,7 @@ class UserImage extends Model
     protected $table = 'user_images'; // Table name
 
     // Mass assignable fields
-    protected $fillable = ['user_id', 'path', 'age'];
+    protected $fillable = ['user_id', 'path','ageRange'];
 
     // Relation with User (assuming User model is named User)
     public function user()
