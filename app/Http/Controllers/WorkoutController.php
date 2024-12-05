@@ -95,21 +95,28 @@ class WorkoutController extends Controller
             $workoutsId = $request->workouts_id;
             $dayNumber = $request->day_number;
 
-            // Ambil 2 Pemanasan
+            // Step 1: Get the highest day_number for this user and workout_id
+            $latestDayNumber = WorkoutUser::where('user_id', $userId)
+                ->where('workouts_id', $workoutsId)
+                ->max('day_number'); // Get the maximum day_number
+
+            // Step 2: Increment day_number by 1
+            $nextDayNumber = $latestDayNumber ? $latestDayNumber + 1 : 1;
+
+            // Step 3: Fetch exercises (warmups, core exercises, and cooldowns)
             $warmups = WorkoutDetail::where('workouts_id', $workoutsId)
                 ->where('sub_category', 'Pemanasan')
                 ->take(2)
                 ->get();
 
-            // Ambil 2 Pendinginan
             $cooldowns = WorkoutDetail::where('workouts_id', $workoutsId)
                 ->where('sub_category', 'Pendinginan')
                 ->take(2)
                 ->get();
 
-            // Ambil 5 Latihan Inti
             $coreExercises = WorkoutDetail::where('workouts_id', $workoutsId)
                 ->where('sub_category', 'Latihan Inti')
+                ->inRandomOrder()
                 ->take(5)
                 ->get();
 
@@ -117,27 +124,29 @@ class WorkoutController extends Controller
             \Log::info("Cooldowns: " . $cooldowns->count());
             \Log::info("Core Exercises: " . $coreExercises->count());
 
-            // Gabungkan semua latihan yang diambil
+            // Combine all exercises
             $allExercises = $warmups->merge($coreExercises)->merge($cooldowns);
 
-            // Simpan setiap latihan ke tabel workouts_user
+            // Step 4: Insert data into workouts_user table with the next day_number
             foreach ($allExercises as $exercise) {
                 $workoutsUser = new WorkoutUser();
                 $workoutsUser->user_id = $userId;
                 $workoutsUser->workouts_id = $workoutsId;
                 $workoutsUser->workouts_details_id = $exercise->workouts_details_id;
-                $workoutsUser->day_number = $dayNumber;
-                $workoutsUser->completed = 0; // Belum selesai
+                $workoutsUser->day_number = $nextDayNumber; // Set incremented day_number
+                $workoutsUser->completed = 0; // Mark as not completed
                 $workoutsUser->save();
             }
 
-            return response()->json(['message' => 'Program berhasil dimulai'], 200);
+            return response()->json(['message' => 'Program successfully started'], 200);
+
         } catch (\Exception $e) {
             return response()->json([
                 'error' => 'Error starting program: ' . $e->getMessage()
             ], 500);
         }
     }
+
 
     public function getWorkoutSteps($userId, $workoutsId, $dayNumber)
     {
@@ -170,6 +179,7 @@ class WorkoutController extends Controller
             'workouts_id' => 'required|integer',
             'workouts_details_id' => 'required|integer',
             'completed' => 'required|boolean',
+            'day_number' => 'required|integer',
         ]);
 
         $workoutUser = WorkoutUser::updateOrCreate(
@@ -177,7 +187,7 @@ class WorkoutController extends Controller
                 'user_id' => $validated['user_id'],
                 'workouts_id' => $validated['workouts_id'],
                 'workouts_details_id' => $validated['workouts_details_id'],
-                'day_number' => $request->input('day_number', 1),
+                'day_number' => $validated['day_number'],
             ],
             ['completed' => $validated['completed']]
         );
@@ -185,4 +195,15 @@ class WorkoutController extends Controller
         return response()->json($workoutUser);
     }
 
+    public function getMaxDayNumber($userId, $workoutsId)
+    {
+
+        // Mengambil nilai terbesar day_number untuk user_id dan workouts_id tertentu
+        $maxDayNumber = WorkoutUser::where('user_id', $userId)
+                                    ->where('workouts_id', $workoutsId)
+                                    ->max('day_number');
+        
+        // Kembalikan response
+        return response()->json(['max_day_number' => $maxDayNumber ?? 1]);
+    }
 }

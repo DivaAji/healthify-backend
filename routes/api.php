@@ -52,3 +52,4 @@ Route::post('start-program', [WorkoutController::class, 'startProgram']);
 // Route::get('workout-steps/{userId}/{dayNumber}', [WorkoutController::class, 'getWorkoutSteps']);
 Route::get('workouts/{userId}/{workoutsId}/steps/{dayNumber}', [WorkoutController::class, 'getWorkoutSteps']);
 Route::post('workouts/update-progress', [WorkoutController::class, 'updateWorkoutUserProgress']);
+Route::get('/getMaxDayNumber/{userId}/{workoutsId}', [WorkoutController::class, 'getMaxDayNumber']);
