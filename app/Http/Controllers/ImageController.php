@@ -56,16 +56,22 @@ class ImageController extends Controller
     {
         // Membuat client HTTP menggunakan Guzzle
         $client = new Client();
-        $response = $client->request('POST', 'http://127.0.0.1:5000/predict', [
+        $response = $client->request('POST', 'http://healthify.web.id/predict', [
             'multipart' => [
                 [
-                    'name'     => 'image',  // Nama parameter yang akan diterima oleh Flask
+                    'name'     => 'image',  // Nama param       eter yang akan diterima oleh Flask
                     'contents' => fopen($imagePath, 'r'),  // Membuka gambar untuk dikirim
                     'filename' => 'image.jpg',  // Nama file yang dikirim
                 ],
             ],
         ]);
-
+        if ($response->getStatusCode() == 200) {
+            $responseBody = json_decode($response->getBody()->getContents(), true);
+            return $responseBody['predicted_age'];  // Kembalikan usia yang diprediksi
+        } else {
+            \Log::error('Failed to get valid response from Flask');
+            return null;
+        }
         // Ambil hasil prediksi usia dari response Flask
         $responseBody = json_decode($response->getBody()->getContents(), true);
         return $responseBody['predicted_age'];  // Kembalikan usia yang diprediksi
