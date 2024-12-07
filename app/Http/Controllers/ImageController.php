@@ -56,7 +56,7 @@ class ImageController extends Controller
     {
         // Membuat client HTTP menggunakan Guzzle
         $client = new Client();
-        $response = $client->request('POST', 'http://healthify.web.id/predict', [
+        $response = $client->request('POST', 'http://ageprediction.healthify.web.id/predict', [
             'multipart' => [
                 [
                     'name'     => 'image',  // Nama param       eter yang akan diterima oleh Flask
