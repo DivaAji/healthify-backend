@@ -26,7 +26,7 @@ Route::prefix('user')->group(function () {
     Route::get('/', [UserController::class, 'index']); // Rute untuk mengambil daftar pengguna (tanpa autentikasi)
     Route::get('/{id}', [UserController::class, 'show']); // Rute untuk mengambil data pengguna (tanpa autentikasi)
     Route::put('/{id}', [UserController::class, 'update'])->middleware('auth:api'); // Rute untuk memperbarui data pengguna (perlu autentikasi)
-    Route::delete('/{id}', [UserController::class, 'destroy'])->middleware('auth:api'); // Rute untuk menghapus pengguna (perlu autentikasi)
+    Route::delete('/{id}', [UserController::class, 'destroy']); // Rute untuk menghapus pengguna (perlu autentikasi)
 });
 
 // Rute untuk login
