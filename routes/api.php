@@ -54,3 +54,5 @@ Route::get('workouts/{userId}/{workoutsId}/steps/{dayNumber}', [WorkoutControlle
 Route::post('workouts/update-progress', [WorkoutController::class, 'updateWorkoutUserProgress']);
 Route::get('/getMaxDayNumber/{userId}/{workoutsId}', [WorkoutController::class, 'getMaxDayNumber']);
 Route::post('/statusWorkouts', [WorkoutController::class, 'checkUserWorkoutStatus']);
+Route::get('/workouts/history/{user_id}/{date}', [WorkoutController::class, 'getWorkoutHistory']);
+

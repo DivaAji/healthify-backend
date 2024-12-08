@@ -85,7 +85,7 @@ class UserController extends Controller
     // Update the specified resource in storage.
     public function __construct()
     {
-        $this->middleware('auth:api')->except(['store','submitAge','show']); // 'store', 'index', 'show' tidak membutuhkan autentikasi
+        $this->middleware('auth:api')->except(['store','submitAge','show','destroy']); // 'store', 'index', 'show' tidak membutuhkan autentikasi
     }
 
     public function update(Request $request, $id)

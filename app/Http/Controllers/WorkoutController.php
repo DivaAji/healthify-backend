@@ -223,4 +223,45 @@ class WorkoutController extends Controller
         return response()->json(['exists' => $exists]);
     }
 
+    public function getWorkoutHistory($userId, $date)
+    {
+        Log::info("User ID: $userId, Date: $date");
+
+        try {
+            // Ambil data dari workouts_user dengan tanggal dan status completed = 1
+            $workouts = DB::table('workouts_user')
+                ->join('workouts', 'workouts_user.workouts_id', '=', 'workouts.workouts_id') // Join with workouts table to get category
+                ->where('workouts_user.user_id', $userId)
+                ->whereDate('workouts_user.updated_at', $date)
+                ->where('workouts_user.completed', 1)
+                ->select('workouts_user.workouts_details_id', 'workouts_user.updated_at', 'workouts.category', 'workouts.workouts_id') // Select workouts_id (category) and other relevant fields
+                ->get();
+
+            // Ambil detail workouts dari workouts_detail berdasarkan workouts_details_id
+            $workoutsDetails = DB::table('workouts_detail')
+                ->whereIn('workouts_details_id', $workouts->pluck('workouts_details_id'))
+                ->get();
+
+            // Gabungkan data workouts_user, workouts, dan workouts_details
+            $result = $workouts->map(function ($workout) use ($workoutsDetails) {
+                // Get the workout detail based on workouts_details_id
+                $detail = $workoutsDetails->firstWhere('workouts_details_id', $workout->workouts_details_id);
+                return [
+                    'name' => $detail->name ?? null,
+                    'sub_category' => $detail->sub_category ?? null,
+                    'description' => $detail->description ?? null,
+                    'duration' => $detail->duration ?? null,
+                    'category' => $workout->category ?? null, // The category from workouts table
+                    'workouts_id' => $workout->workouts_id ?? null, // Add workouts_id to the result
+                    'date' => $workout->updated_at,
+                ];
+            });
+
+            return response()->json($result);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Error fetching workout history: ' . $e->getMessage()], 500);
+        }
+    }
+
+
 }
