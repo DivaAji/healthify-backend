@@ -27,13 +27,13 @@ class WorkoutController extends Controller
         $categories = [];
         switch ($user->ageRange) {
             case 'Remaja':
-                $categories = ['Kelincahan', 'Kelenturan', 'Keseimbangan'];
+                $categories = ['Kelincahan', 'Kelenturan'];
                 break;
             case 'Dewasa':
-                $categories = ['Kelenturan', 'Kardio'];
+                $categories = ['Kelenturan', 'Keseimbangan'];
                 break;
             case 'Lansia':
-                $categories = ['Keseimbangan', 'Relaksasi'];
+                $categories = ['Kelenturan', 'Keseimbangan'];
                 break;
             default:
                 \Log::error("Invalid ageRange for userId {$id}: " . $user->ageRange);
