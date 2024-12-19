@@ -27,7 +27,7 @@ class WorkoutController extends Controller
         $categories = [];
         switch ($user->ageRange) {
             case 'Remaja':
-                $categories = ['Kelincahan', 'Kelenturan'];
+                $categories = ['Kelincahan', 'Kelenturan','Keseimbangan'];
                 break;
             case 'Dewasa':
                 $categories = ['Kelenturan', 'Keseimbangan'];

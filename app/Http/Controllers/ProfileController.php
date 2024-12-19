@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use App\Models\UserModel;
 
 class ProfileController extends Controller
@@ -34,17 +35,24 @@ class ProfileController extends Controller
 
     public function update(Request $request)
     {
-        // Mendapatkan pengguna yang sudah terautentikasi
-        $user = $request->user();  // You already have the authenticated user
+        $user = $request->user();
 
-        // Validasi data yang diterima
         $validated = $request->validate([
-            'username' => 'sometimes|required|string|max:255|unique:users,username,' . $user->user_id . ',user_id',  
-            'email' => 'sometimes|required|email|max:255|unique:users,email,' . $user->user_id . ',user_id', 
+            'username' => 'sometimes|required|string|max:255|unique:users,username,' . $user->user_id . ',user_id',
+            'email' => 'sometimes|required|email|max:255|unique:users,email,' . $user->user_id . ',user_id',
+            'password' => 'sometimes|required|string|min:8|confirmed',
             'height' => 'sometimes|required|numeric',
             'weight' => 'sometimes|required|numeric',
             'gender' => 'sometimes|required|string',
+            'oldPassword' => 'required|string', // Validasi oldPassword
         ]);
+
+        // Periksa apakah oldPassword cocok dengan password saat ini
+        if (!Hash::check($validated['oldPassword'], $user->password)) {
+            return response()->json([
+                'message' => 'Old password is incorrect',
+            ], 403);
+        }
 
         // Update data pengguna
         if ($request->has('username')) {
@@ -52,6 +60,9 @@ class ProfileController extends Controller
         }
         if ($request->has('email')) {
             $user->email = $request->email;
+        }
+        if ($request->has('password')) {
+            $user->password = bcrypt($request->password);
         }
         if ($request->has('height')) {
             $user->height = $request->height;
@@ -63,16 +74,13 @@ class ProfileController extends Controller
             $user->gender = $request->gender;
         }
 
-        // Simpan perubahan
         $user->save();
 
-        // Kembalikan respons sukses
         return response()->json([
             'message' => 'Profile updated successfully',
-            'data' => $user
+            'data' => $user,
         ]);
     }
-
 
 
     // Method to calculate BMI (Weight in kg, Height in cm)
